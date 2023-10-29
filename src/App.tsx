@@ -5,6 +5,8 @@ import SearchInput from './SearchInput';
 import './App.css';
 import ListItems from './ListItems';
 import Services from './API/Services';
+import ErrorBoundary from './ErrorBoundary';
+import ErrorButton from './ErrorButton';
 
 interface Character {
 	name: string;
@@ -58,13 +60,14 @@ export default class App extends Component<object, AppState> {
 		this.setState({ searchTerm: e.target.value });
 	};
 
-	getResource = async (url: string) => {
-		const res = await fetch(url);
-		const body = await res.json();
-		return body;
-	};
-
 	componentDidMount() {
+		const savedSearchTerm = localStorage.getItem('searchTerm');
+		if (savedSearchTerm) {
+			this.setState({ searchTerm: savedSearchTerm }, () => {
+				this.handleSearch();
+			});
+		}
+
 		const swapi = new Services();
 		swapi.getAllPeople().then((body) => {
 			const arrPepople = body;
@@ -73,36 +76,25 @@ export default class App extends Component<object, AppState> {
 				error: null,
 			});
 		});
-		// const savedSearchTerm = localStorage.getItem('searchTerm');
-		// if (savedSearchTerm) {
-		// 	this.setState({ searchTerm: savedSearchTerm }, () => {
-		// 		this.handleSearch();
-		// 	});
-		// }
 	}
+
+	throwError = () => {
+		throw new Error('Это принудительная ошибка');
+	};
 
 	render() {
 		const { searchTerm, error } = this.state;
 		return (
 			<div>
-				<SearchInput
-					searchTerm={searchTerm}
-					onSearch={this.handleSearch}
-					onInputChange={this.handleInputChange}
-				/>
-				<div>
-					{this.state.searchResults.map((item) => (
-						<div
-							style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}
-							key={item.name}
-						>
-							<p>Name: {item.name}</p>
-							<p>Gender: {item.gender}</p>
-							<p>Birth year: {item.birth_year}</p>
-						</div>
-					))}
-				</div>
-				<ListItems items={this.state.searchResults} error={error} />
+				<ErrorBoundary>
+					<SearchInput
+						searchTerm={searchTerm}
+						onSearch={this.handleSearch}
+						onInputChange={this.handleInputChange}
+					/>
+					<ErrorButton onError={this.throwError} />
+					<ListItems items={this.state.searchResults} error={error} />
+				</ErrorBoundary>
 			</div>
 		);
 	}

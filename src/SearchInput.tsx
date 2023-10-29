@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './SearchInput.css';
 
 interface SearchInputProps {
 	searchTerm: string;
@@ -11,15 +12,15 @@ class SearchInput extends Component<SearchInputProps> {
 		const { searchTerm, onSearch, onInputChange } = this.props;
 
 		return (
-			<div className='form-inline my-1 my-lg-0'>
+			<div className='input__field'>
 				<input
-					className='form-control mr-sm-3'
+					className='input-style'
 					type='text'
 					placeholder='Поиск...'
 					value={searchTerm}
 					onChange={onInputChange}
 				/>
-				<button className='btn btn-info my-2 my-sm-0' type='button' onClick={onSearch}>
+				<button className='btn' type='button' onClick={onSearch}>
 					Поиск
 				</button>
 			</div>

@@ -1,0 +1,55 @@
+import { Component } from 'react';
+import Modal from './Modal';
+
+interface ErrorBoundaryProps {}
+interface ErrorBoundaryState {
+	hasError: boolean;
+	error: Error | null;
+}
+
+interface ErrorBoundaryProps {
+	children: React.ReactNode;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+	constructor(props: ErrorBoundaryProps) {
+		super(props);
+		this.state = {
+			hasError: false,
+			error: null,
+		};
+	}
+
+	componentDidCatch(error: Error) {
+		this.setState({
+			hasError: true,
+			error,
+		});
+	}
+
+	throwError = () => {
+		throw new Error('Это принудительная ошибка');
+	};
+
+	handleCloseModal = () => {
+		this.setState({
+			hasError: false,
+			error: null,
+		});
+	};
+
+	render() {
+		const { hasError, error } = this.state;
+		if (hasError) {
+			return (
+				<div>
+					<button onClick={this.throwError}>Вызвать ошибку</button>
+					<Modal error={error} onClose={this.handleCloseModal} />
+				</div>
+			);
+		}
+		return this.props.children;
+	}
+}
+
+export default ErrorBoundary;

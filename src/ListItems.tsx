@@ -14,7 +14,6 @@ interface SearchResultsProps {
 class ListItems extends Component<SearchResultsProps> {
 	render() {
 		const { items, error } = this.props;
-		console.log('file: ListItems.tsx:17 ~ ListItems ~ render ~ items:', items);
 
 		if (error) {
 			return <div>Error: {error}</div>;
@@ -25,7 +24,12 @@ class ListItems extends Component<SearchResultsProps> {
 				{items.map((item) => (
 					<div
 						key={item.name}
-						style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							gap: '10px',
+							borderBottom: '1px solid #ccc',
+						}}
 					>
 						<p>Name: {item.name}</p>
 						<p>Gender: {item.gender}</p>
