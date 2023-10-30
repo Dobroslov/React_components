@@ -1,35 +1,100 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import React, { Component } from 'react';
+import SearchInput from './SearchInput';
+import ListItems from './ListItems';
+import Services from './API/Services';
+import ErrorBoundary from './ErrorBoundary';
+
 import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React + TS</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+interface Character {
+	name: string;
+	gender: string;
+	birth_year: string;
 }
 
-export default App;
+interface AppState {
+	searchTerm: string;
+	searchResults: Character[] | [];
+	error: string | null;
+	isLoading: boolean;
+}
+
+export default class App extends Component<object, AppState> {
+	constructor(props: object) {
+		super(props);
+		this.state = {
+			searchTerm: '',
+			searchResults: [],
+			isLoading: false,
+			error: null,
+		};
+	}
+
+	handleSearch = async () => {
+		const { searchTerm } = this.state;
+		this.setState({ isLoading: true });
+		if (searchTerm.trim() === '') {
+			const swapi = new Services();
+			swapi.getAllPeople().then((body) => {
+				const arrPeople = body;
+				this.setState({
+					searchResults: arrPeople,
+					error: null,
+					isLoading: false,
+				});
+			});
+
+			localStorage.setItem('searchTerm', searchTerm);
+		} else {
+			const swapi = new Services();
+			swapi.searchPeople(searchTerm.trim().toLowerCase()).then((body) => {
+				const arrPeople = body.results;
+				this.setState({
+					searchResults: arrPeople,
+					error: null,
+					isLoading: false,
+				});
+			});
+
+			localStorage.setItem('searchTerm', searchTerm);
+		}
+	};
+
+	handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.setState({ searchTerm: e.target.value });
+	};
+
+	componentDidMount() {
+		const savedSearchTerm = localStorage.getItem('searchTerm');
+		if (savedSearchTerm) {
+			this.setState({ searchTerm: savedSearchTerm }, () => {
+				this.handleSearch();
+			});
+		} else {
+			const swapi = new Services();
+			swapi.getAllPeople().then((body) => {
+				const arrPeople = body;
+				this.setState({
+					searchResults: arrPeople,
+					error: null,
+				});
+			});
+		}
+	}
+
+	render() {
+		const { searchTerm, searchResults, isLoading } = this.state;
+		return (
+			<div>
+				<SearchInput
+					searchTerm={searchTerm}
+					onSearch={this.handleSearch}
+					onInputChange={this.handleInputChange}
+				/>
+				<ErrorBoundary>
+					<ListItems items={searchResults} isLoading={isLoading} />
+				</ErrorBoundary>
+			</div>
+		);
+	}
+}
