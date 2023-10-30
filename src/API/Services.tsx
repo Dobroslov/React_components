@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import { Component } from 'react';
 
 export default class Services {
 	BASE_URL = `https://swapi.dev/api`;
@@ -24,8 +23,6 @@ export default class Services {
 	}
 
 	searchPeople(searchTerm: string) {
-		console.log('file: Services.tsx:27 ~ Services ~ searchPeople ~ searchTerm:', searchTerm);
-
 		return this.getResource(`/people/?search=${searchTerm}`);
 	}
 }

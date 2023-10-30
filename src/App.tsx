@@ -16,6 +16,7 @@ interface AppState {
 	searchTerm: string;
 	searchResults: Character[] | [];
 	error: string | null;
+	isLoading: boolean;
 }
 
 export default class App extends Component<object, AppState> {
@@ -24,12 +25,14 @@ export default class App extends Component<object, AppState> {
 		this.state = {
 			searchTerm: '',
 			searchResults: [],
+			isLoading: false,
 			error: null,
 		};
 	}
 
 	handleSearch = async () => {
 		const { searchTerm } = this.state;
+		this.setState({ isLoading: true });
 		if (searchTerm.trim() === '') {
 			const swapi = new Services();
 			swapi.getAllPeople().then((body) => {
@@ -37,8 +40,10 @@ export default class App extends Component<object, AppState> {
 				this.setState({
 					searchResults: arrPeople,
 					error: null,
+					isLoading: false,
 				});
 			});
+
 			localStorage.setItem('searchTerm', searchTerm);
 		} else {
 			const swapi = new Services();
@@ -47,8 +52,10 @@ export default class App extends Component<object, AppState> {
 				this.setState({
 					searchResults: arrPeople,
 					error: null,
+					isLoading: false,
 				});
 			});
+
 			localStorage.setItem('searchTerm', searchTerm);
 		}
 	};
@@ -76,7 +83,7 @@ export default class App extends Component<object, AppState> {
 	}
 
 	render() {
-		const { searchTerm, searchResults } = this.state;
+		const { searchTerm, searchResults, isLoading } = this.state;
 		return (
 			<div>
 				<SearchInput
@@ -85,7 +92,7 @@ export default class App extends Component<object, AppState> {
 					onInputChange={this.handleInputChange}
 				/>
 				<ErrorBoundary>
-					<ListItems items={searchResults} />
+					<ListItems items={searchResults} isLoading={isLoading} />
 				</ErrorBoundary>
 			</div>
 		);
