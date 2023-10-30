@@ -22,4 +22,10 @@ export default class Services {
 	getPerson(id: string) {
 		return this.getResource(`/people/${id}`);
 	}
+
+	searchPeople(searchTerm: string) {
+		console.log('file: Services.tsx:27 ~ Services ~ searchPeople ~ searchTerm:', searchTerm);
+
+		return this.getResource(`/people/?search=${searchTerm}`);
+	}
 }

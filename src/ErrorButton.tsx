@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
-
-interface ErrorButtonProps {
-	onError: () => void;
-}
-
-class ErrorButton extends Component<ErrorButtonProps> {
-	handleClick = () => {
-		if (this.props.onError) {
-			this.props.onError();
-		}
+import './ErrorButton.css';
+class ErrorButton extends Component {
+	throwError = () => {
+		throw new Error('Это принудительная ошибка');
 	};
 
 	render() {
-		return <button onClick={this.handleClick}>Вызвать ошибку</button>;
+		return (
+			<button className='btn__error' onClick={this.throwError}>
+				Вызвать ошибку
+			</button>
+		);
 	}
 }
 

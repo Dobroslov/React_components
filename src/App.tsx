@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import SearchInput from './SearchInput';
-
-import './App.css';
 import ListItems from './ListItems';
 import Services from './API/Services';
 import ErrorBoundary from './ErrorBoundary';
-import ErrorButton from './ErrorButton';
+
+import './App.css';
 
 interface Character {
 	name: string;
@@ -19,6 +17,7 @@ interface AppState {
 	searchResults: Character[] | [];
 	error: string | null;
 }
+
 export default class App extends Component<object, AppState> {
 	constructor(props: object) {
 		super(props);
@@ -31,28 +30,26 @@ export default class App extends Component<object, AppState> {
 
 	handleSearch = async () => {
 		const { searchTerm } = this.state;
-		try {
+		if (searchTerm.trim() === '') {
 			const swapi = new Services();
 			swapi.getAllPeople().then((body) => {
-				const arrPepople = body;
+				const arrPeople = body;
 				this.setState({
-					searchResults: arrPepople,
+					searchResults: arrPeople,
 					error: null,
 				});
-				localStorage.setItem('searchTerm', searchTerm);
-			});
-			const response = await axios.get(`https://swapi.dev/api/people/`);
-			const data = response.data;
-			this.setState({
-				searchResults: data.results,
-				error: null,
 			});
 			localStorage.setItem('searchTerm', searchTerm);
-		} catch (error) {
-			this.setState({
-				searchResults: [],
-				error: 'Error fetching data. Please try again.',
+		} else {
+			const swapi = new Services();
+			swapi.searchPeople(searchTerm.trim().toLowerCase()).then((body) => {
+				const arrPeople = body.results;
+				this.setState({
+					searchResults: arrPeople,
+					error: null,
+				});
 			});
+			localStorage.setItem('searchTerm', searchTerm);
 		}
 	};
 
@@ -66,34 +63,29 @@ export default class App extends Component<object, AppState> {
 			this.setState({ searchTerm: savedSearchTerm }, () => {
 				this.handleSearch();
 			});
-		}
-
-		const swapi = new Services();
-		swapi.getAllPeople().then((body) => {
-			const arrPepople = body;
-			this.setState({
-				searchResults: [...arrPepople],
-				error: null,
+		} else {
+			const swapi = new Services();
+			swapi.getAllPeople().then((body) => {
+				const arrPeople = body;
+				this.setState({
+					searchResults: arrPeople,
+					error: null,
+				});
 			});
-		});
+		}
 	}
 
-	throwError = () => {
-		throw new Error('Это принудительная ошибка');
-	};
-
 	render() {
-		const { searchTerm, error } = this.state;
+		const { searchTerm, searchResults } = this.state;
 		return (
 			<div>
+				<SearchInput
+					searchTerm={searchTerm}
+					onSearch={this.handleSearch}
+					onInputChange={this.handleInputChange}
+				/>
 				<ErrorBoundary>
-					<SearchInput
-						searchTerm={searchTerm}
-						onSearch={this.handleSearch}
-						onInputChange={this.handleInputChange}
-					/>
-					<ErrorButton onError={this.throwError} />
-					<ListItems items={this.state.searchResults} error={error} />
+					<ListItems items={searchResults} />
 				</ErrorBoundary>
 			</div>
 		);

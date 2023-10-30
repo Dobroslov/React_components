@@ -2,16 +2,14 @@ import React from 'react';
 
 interface ModalProps {
 	error: Error | null;
-	onClose: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ error, onClose }) => {
+const Modal: React.FC<ModalProps> = ({ error }) => {
 	return (
 		<div className='modal'>
 			<div className='modal-content'>
-				<h2>Error</h2>
+				<h2>Что-то пошло не так</h2>
 				{error && <p>{error.toString()}</p>}
-				<button onClick={onClose}>Close</button>
 			</div>
 		</div>
 	);

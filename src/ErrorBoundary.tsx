@@ -27,10 +27,6 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 		});
 	}
 
-	throwError = () => {
-		throw new Error('Это принудительная ошибка');
-	};
-
 	handleCloseModal = () => {
 		this.setState({
 			hasError: false,
@@ -41,12 +37,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 	render() {
 		const { hasError, error } = this.state;
 		if (hasError) {
-			return (
-				<div>
-					<button onClick={this.throwError}>Вызвать ошибку</button>
-					<Modal error={error} onClose={this.handleCloseModal} />
-				</div>
-			);
+			return <Modal error={error} />;
 		}
 		return this.props.children;
 	}

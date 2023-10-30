@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './ListItems.css';
 
 interface Character {
 	name: string;
@@ -8,36 +9,27 @@ interface Character {
 
 interface SearchResultsProps {
 	items: Character[];
-	error: string | null;
 }
 
 class ListItems extends Component<SearchResultsProps> {
 	render() {
-		const { items, error } = this.props;
+		const { items } = this.props;
 
-		if (error) {
-			return <div>Error: {error}</div>;
+		if (items && items.length > 0) {
+			return (
+				<div>
+					{items.map((item) => (
+						<div className='list__item' key={item.name}>
+							<p>Name: {item.name}</p>
+							<p>Gender: {item.gender}</p>
+							<p>Birth year: {item.birth_year}</p>
+						</div>
+					))}
+				</div>
+			);
+		} else {
+			return <div>No items to display.</div>;
 		}
-
-		return (
-			<div>
-				{items.map((item) => (
-					<div
-						key={item.name}
-						style={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							gap: '10px',
-							borderBottom: '1px solid #ccc',
-						}}
-					>
-						<p>Name: {item.name}</p>
-						<p>Gender: {item.gender}</p>
-						<p>Birth year: {item.birth_year}</p>
-					</div>
-				))}
-			</div>
-		);
 	}
 }
 

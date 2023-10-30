@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './SearchInput.css';
+import ErrorButton from './ErrorButton';
 
 interface SearchInputProps {
 	searchTerm: string;
@@ -23,6 +24,7 @@ class SearchInput extends Component<SearchInputProps> {
 				<button className='btn' type='button' onClick={onSearch}>
 					Поиск
 				</button>
+				<ErrorButton />
 			</div>
 		);
 	}
