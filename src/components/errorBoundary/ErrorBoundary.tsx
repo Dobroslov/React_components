@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Modal from './Modal';
+import Modal from '../modal/Modal';
 
 interface ErrorBoundaryProps {}
 interface ErrorBoundaryState {
@@ -39,6 +39,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 		if (hasError) {
 			return <Modal error={error} />;
 		}
+
 		return this.props.children;
 	}
 }
