@@ -1,18 +1,22 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import './SearchInput.css';
 import ErrorButton from '../errorButton/ErrorButton';
 
 interface SearchInputProps {
-	searchTerm: string;
-	onSearch: () => void;
-	onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onSearch: (searchTerm: string) => void;
 }
 
-const SearchInput: FC<SearchInputProps> = ({
-	searchTerm,
-	onSearch,
-	onInputChange,
-}: SearchInputProps) => {
+const SearchInput: FC<SearchInputProps> = ({ onSearch }: SearchInputProps) => {
+	const [searchTerm, setSearchTerm] = useState('');
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchTerm(e.target.value);
+	};
+
+	const handleSearchClick = () => {
+		onSearch(searchTerm);
+	};
+
 	return (
 		<div className='input__field'>
 			<input
@@ -20,9 +24,9 @@ const SearchInput: FC<SearchInputProps> = ({
 				type='text'
 				placeholder='Поиск...'
 				value={searchTerm}
-				onChange={onInputChange}
+				onChange={handleInputChange}
 			/>
-			<button className='btn' type='button' onClick={onSearch}>
+			<button className='btn' type='button' onClick={handleSearchClick}>
 				Поиск
 			</button>
 			<ErrorButton />

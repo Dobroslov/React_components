@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import SearchInput from '../serchInput/SearchInput';
-import { ListItems } from '../listItems/ListItems';
+import { useCallback, useEffect, useState } from 'react';
 import Services from '../../API/Services';
 import { ICharacter } from '../../types/types';
+import { Routes, Route } from 'react-router-dom';
 
 import './App.css';
-import Header from '../UI/header/Header';
+import Layout from '../../Layout/Layout';
+import { CharacterPage } from '../pages/CharacterPage';
 import PersonDetails from '../UI/personDetails/PersonDetails';
 
 export const App = () => {
@@ -14,65 +14,76 @@ export const App = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
 
-	const handleSearch = useCallback(async () => {
-		setIsLoading(true);
-		setIsLoading(true);
-		if (searchTerm.trim() === '') {
-			const swapi = new Services();
-			swapi.getAllPeople().then((body) => {
-				const arrPeople = body;
-				setSearchResults(arrPeople);
-				setIsLoading(false);
-			});
+	const handleSearch = useCallback(
+		async (term: string) => {
+			setIsLoading(true);
+			if (term.trim() === '') {
+				const swapi = new Services();
+				swapi.getAllPeople().then((body) => {
+					const arrPeople = body;
+					setSearchResults(arrPeople);
+					setIsLoading(false);
+				});
 
-			localStorage.setItem('searchTerm', searchTerm);
-		} else {
-			const swapi = new Services();
-			swapi.searchPeople(searchTerm.trim().toLowerCase()).then((body) => {
-				const arrPeople = body.results;
-				setSearchResults(arrPeople);
-				setIsLoading(false);
-			});
+				localStorage.setItem('searchTerm', term);
+			} else {
+				const swapi = new Services();
+				swapi.searchPeople(searchTerm.trim().toLowerCase()).then((body) => {
+					const arrPeople = body.results;
+					setSearchResults(arrPeople);
+					setIsLoading(false);
+				});
 
-			localStorage.setItem('searchTerm', searchTerm);
-		}
-	}, [searchTerm]);
-
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(e.target.value);
-	};
+				localStorage.setItem('searchTerm', searchTerm);
+			}
+		},
+		[searchTerm]
+	);
 
 	const onPersonSelected = (id: string) => {
 		setSelectedPerson(id);
 	};
 
 	useEffect(() => {
+		setIsLoading(true);
 		const savedSearchTerm = localStorage.getItem('searchTerm');
 		if (savedSearchTerm) {
 			setSearchTerm(savedSearchTerm);
-			handleSearch();
+			setIsLoading(false);
 		} else {
 			const swapi = new Services();
 			swapi.getAllPeople().then((body) => {
 				const arrPeople = body;
 				setSearchResults(arrPeople);
+				setIsLoading(false);
 			});
 		}
 	}, [handleSearch, searchTerm]);
 
 	return (
 		<div className='app'>
-			<Header />
-			<SearchInput
-				searchTerm={searchTerm}
-				onSearch={handleSearch}
-				onInputChange={handleInputChange}
-			/>
-			<div className='app__content'>
-				<ListItems items={searchResults} isLoading={isLoading} onItemSelected={onPersonSelected} />
-				<PersonDetails personId={selectedPerson} />
-				{/* (selectedPerson ? <PersonDetails personId={selectedPerson} /> : null) */}
-			</div>
+			<Routes>
+				<Route path='/' element={<Layout onSearch={handleSearch} />}>
+					<Route
+						index
+						path='characters'
+						element={
+							<CharacterPage
+								items={searchResults}
+								isLoading={isLoading}
+								onItemSelected={onPersonSelected}
+								personId={selectedPerson}
+							/>
+						}
+					/>
+					<Route
+						path={`characters/:details`}
+						element={<PersonDetails personId={selectedPerson} />}
+					/>
+					<Route path='planets' element={<div>Planets Content</div>} />
+					<Route path='ships' element={<div>Ships Content</div>} />
+				</Route>
+			</Routes>
 		</div>
 	);
 };

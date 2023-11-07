@@ -1,13 +1,13 @@
-.person-details {
+.person-details__container {
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.person-details.card {
 	display: flex;
 	flex-direction: row;
 	padding: 1rem;
 	border: 1px solid #444;
-}
-
-.person-details__container {
-	flex: 0 0 50%;
-	max-width: 50%;
 }
 
 .list-group {

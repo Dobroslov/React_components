@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import './PersonDetails.css';
+import { useEffect, useState } from 'react';
 import Services from '../../../API/Services';
 import { IPerson } from '../../../types/types';
+import { ClipLoader } from 'react-spinners';
+
+import './PersonDetails.css';
 
 const PersonDetails = ({ personId }: { personId: string | null }) => {
 	const [person, setPerson] = useState<IPerson | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (personId !== null) {
+			setIsLoading(true);
 			const swapi = new Services();
 			swapi.getPerson(personId).then((body) => {
 				setPerson(body as IPerson);
+				setIsLoading(false);
 			});
 		}
 	}, [personId]);
@@ -19,7 +24,11 @@ const PersonDetails = ({ personId }: { personId: string | null }) => {
 
 	return (
 		<div className='person-details__container'>
-			{person ? (
+			{isLoading ? (
+				<div className='spinner'>
+					<ClipLoader color={'#7ce6aa'} loading={isLoading} size={50} />
+				</div>
+			) : person ? (
 				<div className='person-details card rounded'>
 					<img
 						className='person-image'

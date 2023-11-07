@@ -14,7 +14,7 @@ export const ListItems = ({ items, isLoading, onItemSelected }: SearchResultsPro
 	if (isLoading) {
 		return (
 			<div className='spinner'>
-				<ClipLoader color={'#000'} loading={isLoading} size={50} />
+				<ClipLoader color={'#7ce6aa'} loading={isLoading} size={50} />
 			</div>
 		);
 	}

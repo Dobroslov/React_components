@@ -21,8 +21,6 @@ export default class Services {
 
 	getPerson = async (id: string) => {
 		const person = await this.getResource(`/people/${id}`);
-		console.log(this.transformPerson(person));
-
 		return this.transformPerson(person);
 	};
 
