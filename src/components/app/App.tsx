@@ -8,36 +8,44 @@ import Layout from '../../Layout/Layout';
 import { CharacterPage } from '../pages/CharacterPage';
 import PersonDetails from '../UI/personDetails/PersonDetails';
 
-export const App = () => {
+export const App: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState<ICharacter[] | []>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
 
+	const [page, setPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
+
+	const itemsPerPage = 10;
+
+	const handlePageChange = (newPage: number) => {
+		setPage(newPage);
+	};
+
 	const handleSearch = useCallback(
 		async (term: string) => {
+			const swapi = new Services();
 			setIsLoading(true);
 			if (term.trim() === '') {
-				const swapi = new Services();
-				swapi.getAllPeople().then((body) => {
-					const arrPeople = body;
-					setSearchResults(arrPeople);
+				swapi.getAllPeople(page).then((body) => {
+					setSearchResults(body.arrItems);
+					setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
 					setIsLoading(false);
 				});
 
 				localStorage.setItem('searchTerm', term);
 			} else {
-				const swapi = new Services();
 				swapi.searchPeople(searchTerm.trim().toLowerCase()).then((body) => {
-					const arrPeople = body.results;
-					setSearchResults(arrPeople);
+					setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
+					setSearchResults(body.results);
 					setIsLoading(false);
 				});
 
 				localStorage.setItem('searchTerm', searchTerm);
 			}
 		},
-		[searchTerm]
+		[searchTerm, page]
 	);
 
 	const onPersonSelected = (id: string) => {
@@ -52,18 +60,29 @@ export const App = () => {
 			setIsLoading(false);
 		} else {
 			const swapi = new Services();
-			swapi.getAllPeople().then((body) => {
-				const arrPeople = body;
+			swapi.getAllPeople(page).then((body) => {
+				const arrPeople = body.arrItems;
 				setSearchResults(arrPeople);
+				setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
 				setIsLoading(false);
 			});
 		}
-	}, [handleSearch, searchTerm]);
+	}, [handleSearch, searchTerm, page]);
 
 	return (
 		<div className='app'>
 			<Routes>
-				<Route path='/' element={<Layout onSearch={handleSearch} />}>
+				<Route
+					path='/'
+					element={
+						<Layout
+							onSearch={handleSearch}
+							currentPage={page}
+							totalPages={totalPages}
+							onPageChange={handlePageChange}
+						/>
+					}
+				>
 					<Route
 						index
 						path='characters'

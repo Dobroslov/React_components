@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICharacter } from '../../types/types';
+import { ICharacter } from '../../../types/types';
 
 import './ItemList.css';
 

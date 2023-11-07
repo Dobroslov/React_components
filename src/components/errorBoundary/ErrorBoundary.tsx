@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Modal from '../modal/Modal';
+import Modal from '../UI/modal/Modal';
 
 interface ErrorBoundaryProps {}
 interface ErrorBoundaryState {

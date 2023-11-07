@@ -1,5 +1,5 @@
 import { ClipLoader } from 'react-spinners';
-import { ICharacter } from '../../types/types';
+import { ICharacter } from '../../../types/types';
 import { ItemList } from '../itemList/ItemList';
 
 import './ListItems.css';

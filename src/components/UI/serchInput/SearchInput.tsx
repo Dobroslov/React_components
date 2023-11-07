@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import './SearchInput.css';
-import ErrorButton from '../errorButton/ErrorButton';
+import ErrorButton from '../../errorButton/ErrorButton';
 
 interface SearchInputProps {
 	onSearch: (searchTerm: string) => void;

@@ -14,9 +14,10 @@ export default class Services {
 		}
 	};
 
-	getAllPeople = async () => {
-		const res = await this.getResource(`/people/`);
-		return res.results.map(this.transformPerson);
+	getAllPeople = async (pageNumber: number = 1) => {
+		const res = await this.getResource(`/people/?page=${pageNumber}`);
+		const result = { arrItems: res.results.map(this.transformPerson), pageNumber: res.count };
+		return result;
 	};
 
 	getPerson = async (id: string) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItems } from '../listItems/ListItems';
+import { ListItems } from '../UI/listItems/ListItems';
 import PersonDetails from '../UI/personDetails/PersonDetails';
 import { ICharacter } from '../../types/types';
 
