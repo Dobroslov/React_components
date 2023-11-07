@@ -5,7 +5,7 @@ import './ItemList.css';
 
 interface ItemListProps {
 	item: ICharacter;
-	onItemSelected: (id: number) => void;
+	onItemSelected: (id: string) => void;
 }
 
 export const ItemList: React.FC<ItemListProps> = ({ item, onItemSelected }) => {
@@ -13,7 +13,7 @@ export const ItemList: React.FC<ItemListProps> = ({ item, onItemSelected }) => {
 	if (id) {
 		return (
 			<li className='list-group__item' onClick={() => onItemSelected(id)}>
-				<p>Name: {name}</p>
+				<p>{name}</p>
 			</li>
 		);
 	}

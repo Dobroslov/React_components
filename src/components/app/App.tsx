@@ -12,7 +12,7 @@ export const App = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState<ICharacter[] | []>([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [selectedPerson, setSelectedPerson] = useState<null | number>(null);
+	const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
 
 	const handleSearch = useCallback(async () => {
 		setIsLoading(true);
@@ -42,7 +42,7 @@ export const App = () => {
 		setSearchTerm(e.target.value);
 	};
 
-	const onPersonSelected = (id: number) => {
+	const onPersonSelected = (id: string) => {
 		setSelectedPerson(id);
 	};
 

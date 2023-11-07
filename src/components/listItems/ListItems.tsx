@@ -7,7 +7,7 @@ import './ListItems.css';
 interface SearchResultsProps {
 	items: ICharacter[];
 	isLoading: boolean;
-	onItemSelected: (id: number) => void;
+	onItemSelected: (id: string) => void;
 }
 
 export const ListItems = ({ items, isLoading, onItemSelected }: SearchResultsProps) => {

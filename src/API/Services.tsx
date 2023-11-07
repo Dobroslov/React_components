@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { ICharacter } from '../types/types';
+import { ICharacter, IPerson } from '../types/types';
 
 export default class Services {
 	BASE_URL = `https://swapi.dev/api`;
 
-	async getResource(url: string) {
+	getResource = async (url: string) => {
 		try {
 			const response = await axios.get(`${this.BASE_URL}${url}`);
 			const data = response.data;
@@ -12,19 +12,23 @@ export default class Services {
 		} catch (error) {
 			return [];
 		}
-	}
-
-	async getAllPeople() {
-		const res = await this.getResource(`/people/`);
-		return res.results;
-	}
-
-	getPerson = (id: number) => {
-		return this.getResource(`/people/${id}`);
 	};
 
-	searchPeople = (searchTerm: string) => {
-		return this.getResource(`/people/?search=${searchTerm}`);
+	getAllPeople = async () => {
+		const res = await this.getResource(`/people/`);
+		return res.results.map(this.transformPerson);
+	};
+
+	getPerson = async (id: string) => {
+		const person = await this.getResource(`/people/${id}`);
+		console.log(this.transformPerson(person));
+
+		return this.transformPerson(person);
+	};
+
+	searchPeople = async (searchTerm: string) => {
+		const res = await this.getResource(`/people/?search=${searchTerm}`);
+		return res;
 	};
 
 	getId = (item: ICharacter) => {
@@ -38,7 +42,7 @@ export default class Services {
 		return null;
 	};
 
-	transformPerson = (person: ICharacter) => {
+	transformPerson = (person: IPerson) => {
 		return {
 			id: this.getId(person),
 			name: person.name,
