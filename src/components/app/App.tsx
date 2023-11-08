@@ -6,13 +6,14 @@ import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Layout from '../../Layout/Layout';
 import { CharacterPage } from '../pages/CharacterPage';
-import PersonDetails from '../UI/personDetails/PersonDetails';
 
 export const App: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState<ICharacter[] | []>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
+	const [isRightSectionOpen, setIsRightSectionOpen] = useState(false);
+	console.log('file: App.tsx:16 ~ isRightSectionOpen:', isRightSectionOpen);
 
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
@@ -50,6 +51,7 @@ export const App: React.FC = () => {
 
 	const onPersonSelected = (id: string) => {
 		setSelectedPerson(id);
+		setIsRightSectionOpen(true);
 	};
 
 	useEffect(() => {
@@ -85,19 +87,16 @@ export const App: React.FC = () => {
 				>
 					<Route
 						index
-						path='characters'
 						element={
 							<CharacterPage
 								items={searchResults}
 								isLoading={isLoading}
 								onItemSelected={onPersonSelected}
 								personId={selectedPerson}
+								setIsRightSectionOpen={setIsRightSectionOpen}
+								isRightSectionOpen={isRightSectionOpen}
 							/>
 						}
-					/>
-					<Route
-						path={`characters/:details`}
-						element={<PersonDetails personId={selectedPerson} />}
 					/>
 					<Route path='planets' element={<div>Planets Content</div>} />
 					<Route path='ships' element={<div>Ships Content</div>} />

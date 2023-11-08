@@ -7,13 +7,13 @@ const Header = () => {
 	return (
 		<div className='header flex'>
 			<h3>
-				<a href='#' className='title__h3'>
+				<NavLink to='/' className='title__h3'>
 					Star wars
-				</a>
+				</NavLink>
 			</h3>
 			<ul className='header__nav'>
 				<li className='nav__item'>
-					<NavLink to='/characters' className='nav__link'>
+					<NavLink to='/' className='nav__link'>
 						Characters
 					</NavLink>
 				</li>

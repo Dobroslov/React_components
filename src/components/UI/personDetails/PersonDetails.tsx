@@ -4,10 +4,22 @@ import { IPerson } from '../../../types/types';
 import { ClipLoader } from 'react-spinners';
 
 import './PersonDetails.css';
+interface PersonDetailsProps {
+	personId: string | null;
+	setIsRightSectionOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	closePersonDetails: () => void;
+}
 
-const PersonDetails = ({ personId }: { personId: string | null }) => {
+const PersonDetails: React.FC<PersonDetailsProps> = ({
+	personId,
+	closePersonDetails,
+}: PersonDetailsProps) => {
 	const [person, setPerson] = useState<IPerson | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const handleClose = () => {
+		closePersonDetails();
+	};
 
 	useEffect(() => {
 		if (personId !== null) {
@@ -51,6 +63,7 @@ const PersonDetails = ({ personId }: { personId: string | null }) => {
 								<span>{eyeColor}</span>
 							</li>
 						</ul>
+						<button onClick={handleClose}>Close</button>
 					</div>
 				</div>
 			) : null}
