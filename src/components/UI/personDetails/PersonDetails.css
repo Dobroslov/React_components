@@ -1,0 +1,49 @@
+.person-details__container {
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.person-details.card {
+	display: flex;
+	flex-direction: row;
+	padding: 1rem;
+	border: 1px solid #444;
+}
+
+.list-group {
+	display: flex;
+	justify-content: flex-start;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	padding-left: 0;
+	margin-bottom: 0;
+}
+
+.card-body {
+	flex: 1 1 auto;
+	min-height: 1px;
+	padding: 1.25rem;
+}
+
+.list-group-item {
+	position: relative;
+	display: block;
+	padding: 0.75rem 1.25rem;
+	background-color: #303030;
+	border-bottom: 1px solid #444;
+}
+
+.person-details .person-image {
+	width: 30%;
+	height: 30%;
+	border-radius: 10px;
+}
+
+.person-details .list-group-item {
+	padding: 0.25rem;
+	text-align: start;
+}
+
+.person-details .list-group-item .term {
+	margin-right: 0.5rem;
+}

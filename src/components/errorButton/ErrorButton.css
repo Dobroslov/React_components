@@ -1,0 +1,12 @@
+.btn__error {
+	color: #ff5151;
+	white-space: nowrap;
+	border: 2px solid #ff5151;
+	background-color: white;
+}
+
+.btn__error:hover {
+	color: white;
+	background-color: #ff5151;
+	border: 2px solid #ff5151;
+}
