@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import Services from '../../API/Services';
 import { ICharacter } from '../../types/types';
-import { Routes, Route } from 'react-router-dom';
-
-import './App.css';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Layout from '../../Layout/Layout';
 import { CharacterPage } from '../pages/CharacterPage';
 
+import './App.css';
+import NotFoundPage from '../pages/NotFoundPage';
+
 export const App: React.FC = () => {
+	const navigate = useNavigate();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState<ICharacter[] | []>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
 	const [isRightSectionOpen, setIsRightSectionOpen] = useState(false);
-	console.log('file: App.tsx:16 ~ isRightSectionOpen:', isRightSectionOpen);
 
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
@@ -71,6 +72,10 @@ export const App: React.FC = () => {
 		}
 	}, [handleSearch, searchTerm, page]);
 
+	useEffect(() => {
+		navigate('/character');
+	}, []);
+
 	return (
 		<div className='app'>
 			<Routes>
@@ -87,6 +92,7 @@ export const App: React.FC = () => {
 				>
 					<Route
 						index
+						path=':characters'
 						element={
 							<CharacterPage
 								items={searchResults}
@@ -98,9 +104,8 @@ export const App: React.FC = () => {
 							/>
 						}
 					/>
-					<Route path='planets' element={<div>Planets Content</div>} />
-					<Route path='ships' element={<div>Ships Content</div>} />
 				</Route>
+				<Route path='*' element={<NotFoundPage />} />
 			</Routes>
 		</div>
 	);
