@@ -37,7 +37,7 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({
 	return (
 		<div className='person-details__container'>
 			{isLoading ? (
-				<div className='spinner'>
+				<div className='spinner' data-testid='spinner_person'>
 					<ClipLoader color={'#7ce6aa'} loading={isLoading} size={50} />
 				</div>
 			) : person ? (
