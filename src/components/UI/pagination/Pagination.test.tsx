@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vitest } from 'vitest';
-import Pagination from '../components/UI/pagination/Pagination';
+import Pagination from './Pagination';
 
 describe('Pagination component', () => {
 	const onPageChange = vitest.fn();

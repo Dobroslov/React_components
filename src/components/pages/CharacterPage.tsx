@@ -34,7 +34,6 @@ export const CharacterPage = ({
 	return (
 		<div className='app__content'>
 			<ListItems items={items} isLoading={isLoading} onItemSelected={handleItemSelection} />
-			{/* <PersonDetails personId={personId} setIsRightSectionOpen={setIsRightSectionOpen} /> */}
 			{personId && isRightSectionOpen && (
 				<PersonDetails
 					personId={personId}

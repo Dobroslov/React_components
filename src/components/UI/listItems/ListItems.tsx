@@ -13,7 +13,7 @@ interface SearchResultsProps {
 export const ListItems = ({ items, isLoading, onItemSelected }: SearchResultsProps) => {
 	if (isLoading) {
 		return (
-			<div className='spinner'>
+			<div className='spinner' data-testid='spinner-list'>
 				<ClipLoader color={'#7ce6aa'} loading={isLoading} size={50} />
 			</div>
 		);
