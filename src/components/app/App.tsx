@@ -13,20 +13,14 @@ export const App: React.FC = () => {
 	const {
 		searchTerm,
 		setSearchTerm,
-		searchResults,
 		setSearchResults,
-		isLoading,
 		setIsLoading,
-		selectedPerson,
 		setSelectedPerson,
-		isRightSectionOpen,
 		setIsRightSectionOpen,
 		page,
 		setPage,
-		totalPages,
 		setTotalPages,
 	} = useAppContext();
-
 	const itemsPerPage = 10;
 
 	const handlePageChange = (newPage: number) => {
@@ -93,28 +87,12 @@ export const App: React.FC = () => {
 			<Routes>
 				<Route
 					path='/'
-					element={
-						<Layout
-							onSearch={handleSearch}
-							currentPage={page}
-							totalPages={totalPages}
-							onPageChange={handlePageChange}
-						/>
-					}
+					element={<Layout onSearch={handleSearch} onPageChange={handlePageChange} />}
 				>
 					<Route
 						index
 						path=':characters'
-						element={
-							<CharacterPage
-								items={searchResults}
-								isLoading={isLoading}
-								onItemSelected={onPersonSelected}
-								personId={selectedPerson}
-								setIsRightSectionOpen={setIsRightSectionOpen}
-								isRightSectionOpen={isRightSectionOpen}
-							/>
-						}
+						element={<CharacterPage onItemSelected={onPersonSelected} />}
 					/>
 				</Route>
 				<Route path='*' element={<NotFoundPage />} />

@@ -4,33 +4,27 @@ import { IPerson } from '../../../types/types';
 import { ClipLoader } from 'react-spinners';
 
 import './PersonDetails.css';
-interface PersonDetailsProps {
-	personId: string | null;
-	setIsRightSectionOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	closePersonDetails: () => void;
-}
+import { useAppContext } from '../../../providers/appContext/AppContext';
 
-const PersonDetails: React.FC<PersonDetailsProps> = ({
-	personId,
-	closePersonDetails,
-}: PersonDetailsProps) => {
+const PersonDetails: React.FC = () => {
+	const { selectedPerson, setIsRightSectionOpen, isRightSectionOpen } = useAppContext();
 	const [person, setPerson] = useState<IPerson | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleClose = () => {
-		closePersonDetails();
+	const handleCloseItemDetails = () => {
+		setIsRightSectionOpen(!isRightSectionOpen);
 	};
 
 	useEffect(() => {
-		if (personId !== null) {
+		if (selectedPerson !== null) {
 			setIsLoading(true);
 			const swapi = new Services();
-			swapi.getPerson(personId).then((body) => {
+			swapi.getPerson(selectedPerson).then((body) => {
 				setPerson(body as IPerson);
 				setIsLoading(false);
 			});
 		}
-	}, [personId]);
+	}, [selectedPerson]);
 
 	const { name, gender, birth_year, eyeColor, id } = person || {};
 
@@ -63,7 +57,7 @@ const PersonDetails: React.FC<PersonDetailsProps> = ({
 								<span>{eyeColor}</span>
 							</li>
 						</ul>
-						<button onClick={handleClose}>Close</button>
+						<button onClick={handleCloseItemDetails}>Close</button>
 					</div>
 				</div>
 			) : null}

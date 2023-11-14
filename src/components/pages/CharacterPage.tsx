@@ -1,27 +1,13 @@
 import PersonDetails from '../UI/personDetails/PersonDetails';
-import { ICharacter } from '../../types/types';
 import { ListItems } from '../UI/listItems/ListItems';
+import { useAppContext } from '../../providers/appContext/AppContext';
 
 interface SearchResultsProps {
-	items: ICharacter[];
-	isLoading: boolean;
 	onItemSelected: (id: string) => void;
-	personId: string | null;
-	setIsRightSectionOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	isRightSectionOpen: boolean;
 }
 
-export const CharacterPage: React.FC<SearchResultsProps> = ({
-	items,
-	isLoading,
-	onItemSelected,
-	personId,
-	setIsRightSectionOpen,
-	isRightSectionOpen,
-}) => {
-	const closePersonDetails = () => {
-		setIsRightSectionOpen(!isRightSectionOpen);
-	};
+export const CharacterPage: React.FC<SearchResultsProps> = ({ onItemSelected }) => {
+	const { isRightSectionOpen, setIsRightSectionOpen, selectedPerson } = useAppContext();
 
 	const getURL = () => {
 		const url = new URL(window.location.href);
@@ -32,9 +18,20 @@ export const CharacterPage: React.FC<SearchResultsProps> = ({
 		window.history.replaceState({}, document.title, modifiedURL);
 	};
 
+	// const onPersonSelected = (id: string) => {
+	// 	setSelectedPerson(id);
+	// 	setIsRightSectionOpen(true);
+	// 	const updatedURL = `/character/?page=${page}&details=${id}`;
+	// 	navigate(updatedURL);
+	// };
+
+	const closeItemDetails = () => {
+		setIsRightSectionOpen(!isRightSectionOpen);
+	};
+
 	const handleItemSelection = (id: string) => {
-		if (id === personId) {
-			closePersonDetails();
+		if (id === selectedPerson) {
+			closeItemDetails();
 			getURL();
 		} else {
 			onItemSelected(id);
@@ -43,14 +40,8 @@ export const CharacterPage: React.FC<SearchResultsProps> = ({
 
 	return (
 		<div className='app__content'>
-			<ListItems items={items} isLoading={isLoading} onItemSelected={handleItemSelection} />
-			{personId && isRightSectionOpen && (
-				<PersonDetails
-					personId={personId}
-					setIsRightSectionOpen={setIsRightSectionOpen}
-					closePersonDetails={closePersonDetails}
-				/>
-			)}
+			<ListItems onItemSelected={handleItemSelection} />
+			{selectedPerson && isRightSectionOpen && <PersonDetails />}
 		</div>
 	);
 };
