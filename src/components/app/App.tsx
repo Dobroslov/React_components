@@ -1,28 +1,38 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import Services from '../../API/Services';
-import { ICharacter } from '../../types/types';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Layout from '../../Layout/Layout';
 import { CharacterPage } from '../pages/CharacterPage';
 
 import './App.css';
 import NotFoundPage from '../pages/NotFoundPage';
+import { useAppContext } from '../../providers/appContext/AppContext';
 
 export const App: React.FC = () => {
 	const navigate = useNavigate();
-	const [searchTerm, setSearchTerm] = useState('');
-	const [searchResults, setSearchResults] = useState<ICharacter[] | []>([]);
-	const [isLoading, setIsLoading] = useState(false);
-	const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
-	const [isRightSectionOpen, setIsRightSectionOpen] = useState(false);
-
-	const [page, setPage] = useState(1);
-	const [totalPages, setTotalPages] = useState(1);
+	const {
+		searchTerm,
+		setSearchTerm,
+		searchResults,
+		setSearchResults,
+		isLoading,
+		setIsLoading,
+		selectedPerson,
+		setSelectedPerson,
+		isRightSectionOpen,
+		setIsRightSectionOpen,
+		page,
+		setPage,
+		totalPages,
+		setTotalPages,
+	} = useAppContext();
 
 	const itemsPerPage = 10;
 
 	const handlePageChange = (newPage: number) => {
 		setPage(newPage);
+		const updatedURL = `/character/?page=${newPage}`;
+		navigate(updatedURL);
 	};
 
 	const handleSearch = useCallback(
@@ -53,6 +63,8 @@ export const App: React.FC = () => {
 	const onPersonSelected = (id: string) => {
 		setSelectedPerson(id);
 		setIsRightSectionOpen(true);
+		const updatedURL = `/character/?page=${page}&details=${id}`;
+		navigate(updatedURL);
 	};
 
 	useEffect(() => {
@@ -73,7 +85,7 @@ export const App: React.FC = () => {
 	}, [handleSearch, searchTerm, page]);
 
 	useEffect(() => {
-		navigate('/character');
+		navigate('/character/?page=1');
 	}, []);
 
 	return (

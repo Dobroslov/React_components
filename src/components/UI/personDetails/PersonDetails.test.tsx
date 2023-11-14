@@ -19,18 +19,4 @@ describe('Person details component', async () => {
 		const spinner = screen.getByTestId('spinner_person');
 		expect(spinner).toBeInTheDocument();
 	});
-
-	// it('calls closePersonDetails when Close button is clicked', async () => {
-	// 	render(
-	// 		<PersonDetails
-	// 			personId={personId}
-	// 			setIsRightSectionOpen={setIsRightSectionOpen}
-	// 			closePersonDetails={closePersonDetails}
-	// 		/>
-	// 	);
-
-	// 	const closeButton = await screen.findByText('Close');
-	// 	fireEvent.click(closeButton);
-	// 	expect(closePersonDetails).toHaveBeenCalled();
-	// });
 });

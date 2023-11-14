@@ -26,15 +26,7 @@ const Pagination: React.FC<IPaginationProps> = ({ currentPage, totalPages, onPag
 
 	return (
 		<div className='pagination__container'>
-			<ul className='pagination__list'>
-				<li className='page__btn' onClick={() => onPageChange(currentPage - 1)}>
-					&larr;
-				</li>
-				{generatePageNumbers()}
-				<li className='page__btn' onClick={() => onPageChange(currentPage + 1)}>
-					&rarr;
-				</li>
-			</ul>
+			<ul className='pagination__list'>{generatePageNumbers()}</ul>
 		</div>
 	);
 };
