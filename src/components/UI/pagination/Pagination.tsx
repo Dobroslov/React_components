@@ -1,13 +1,19 @@
 import React from 'react';
 import './Pagination.css';
 import { useAppContext } from '../../../providers/appContext/AppContext';
+import { useNavigate } from 'react-router-dom';
 
-interface IPaginationProps {
-	onPageChange: (page: number) => void;
-}
+const Pagination: React.FC = () => {
+	const navigate = useNavigate();
+	const { page, setPage, totalPages, setURL } = useAppContext();
 
-const Pagination: React.FC<IPaginationProps> = ({ onPageChange }) => {
-	const { page, totalPages } = useAppContext();
+	const handlePageChange = (newPage: number) => {
+		setPage(newPage);
+		const updatedURL = `/character/?page=${newPage}`;
+		setURL(updatedURL);
+		navigate(updatedURL);
+	};
+
 	const generatePageNumbers = () => {
 		const pages = [];
 		for (let i = 1; i <= totalPages; i++) {
@@ -15,7 +21,7 @@ const Pagination: React.FC<IPaginationProps> = ({ onPageChange }) => {
 				<li
 					key={i}
 					className={`page__numbers ${page === i ? 'active' : ''}`}
-					onClick={() => onPageChange(i)}
+					onClick={() => handlePageChange(i)}
 				>
 					{i}
 				</li>

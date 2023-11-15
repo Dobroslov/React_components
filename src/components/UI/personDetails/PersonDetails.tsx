@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import Services from '../../../API/Services';
 import { IPerson } from '../../../types/types';
 import { ClipLoader } from 'react-spinners';
+import { useAppContext } from '../../../providers/appContext/AppContext';
+import { getNewURL } from '../../../helpers/helpers';
 
 import './PersonDetails.css';
-import { useAppContext } from '../../../providers/appContext/AppContext';
 
 const PersonDetails: React.FC = () => {
-	const { selectedPerson, setIsRightSectionOpen, isRightSectionOpen } = useAppContext();
+	const { selectedPerson, setIsRightSectionOpen, setURL } = useAppContext();
 	const [person, setPerson] = useState<IPerson | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleCloseItemDetails = () => {
-		setIsRightSectionOpen(!isRightSectionOpen);
+		setIsRightSectionOpen(false);
+		getNewURL();
 	};
 
 	useEffect(() => {
@@ -25,6 +27,13 @@ const PersonDetails: React.FC = () => {
 			});
 		}
 	}, [selectedPerson]);
+
+	useEffect(() => {
+		if (selectedPerson !== null) {
+			const updatedURL = `/character/?details=${selectedPerson}`;
+			setURL(updatedURL);
+		}
+	}, [selectedPerson, setURL]);
 
 	const { name, gender, birth_year, eyeColor, id } = person || {};
 

@@ -6,10 +6,9 @@ import Pagination from '../components/UI/pagination/Pagination';
 
 interface ILayoutProps {
 	onSearch: (searchTerm: string) => void;
-	onPageChange: (page: number) => void;
 }
 
-const Layout: React.FC<ILayoutProps> = ({ onSearch, onPageChange }) => {
+const Layout: React.FC<ILayoutProps> = ({ onSearch }) => {
 	return (
 		<>
 			<Header />
@@ -17,7 +16,7 @@ const Layout: React.FC<ILayoutProps> = ({ onSearch, onPageChange }) => {
 			<div className='app__content'>
 				<Outlet />
 			</div>
-			<Pagination onPageChange={onPageChange} />
+			<Pagination />
 		</>
 	);
 };

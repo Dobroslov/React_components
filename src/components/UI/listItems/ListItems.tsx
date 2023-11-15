@@ -4,12 +4,9 @@ import { useAppContext } from '../../../providers/appContext/AppContext';
 
 import './ListItems.css';
 
-interface SearchResultsProps {
-	onItemSelected: (id: string) => void;
-}
-
-export const ListItems = ({ onItemSelected }: SearchResultsProps) => {
+export const ListItems = () => {
 	const { searchResults, isLoading } = useAppContext();
+
 	if (isLoading) {
 		return (
 			<div className='spinner' data-testid='spinner-list'>
@@ -25,7 +22,7 @@ export const ListItems = ({ onItemSelected }: SearchResultsProps) => {
 	return (
 		<ul className='items-list rounded'>
 			{searchResults.map((item) => (
-				<ItemList key={item.name} item={item} onItemSelected={onItemSelected} />
+				<ItemList key={item.name} item={item} />
 			))}
 		</ul>
 	);

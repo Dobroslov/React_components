@@ -10,56 +10,40 @@ import { useAppContext } from '../../providers/appContext/AppContext';
 
 export const App: React.FC = () => {
 	const navigate = useNavigate();
-	const {
-		searchTerm,
-		setSearchTerm,
-		setSearchResults,
-		setIsLoading,
-		setSelectedPerson,
-		setIsRightSectionOpen,
-		page,
-		setPage,
-		setTotalPages,
-	} = useAppContext();
+	const { searchTerm, setSearchTerm, setSearchResults, setIsLoading, page, setTotalPages } =
+		useAppContext();
 	const itemsPerPage = 10;
-
-	const handlePageChange = (newPage: number) => {
-		setPage(newPage);
-		const updatedURL = `/character/?page=${newPage}`;
-		navigate(updatedURL);
-	};
 
 	const handleSearch = useCallback(
 		async (term: string) => {
 			const swapi = new Services();
 			setIsLoading(true);
+
+			let actualSearchTerm = term;
+
 			if (term.trim() === '') {
+				const savedSearchTerm = localStorage.getItem('searchTerm');
+				if (savedSearchTerm) {
+					actualSearchTerm = savedSearchTerm;
+				}
+
 				swapi.getAllPeople(page).then((body) => {
 					setSearchResults(body.arrItems);
 					setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
 					setIsLoading(false);
 				});
-
-				localStorage.setItem('searchTerm', term);
 			} else {
-				swapi.searchPeople(searchTerm.trim().toLowerCase()).then((body) => {
+				swapi.searchPeople(actualSearchTerm.trim().toLowerCase()).then((body) => {
 					setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
 					setSearchResults(body.results);
 					setIsLoading(false);
 				});
 
-				localStorage.setItem('searchTerm', searchTerm);
+				localStorage.setItem('searchTerm', actualSearchTerm);
 			}
 		},
-		[searchTerm, page]
+		[page]
 	);
-
-	const onPersonSelected = (id: string) => {
-		setSelectedPerson(id);
-		setIsRightSectionOpen(true);
-		const updatedURL = `/character/?page=${page}&details=${id}`;
-		navigate(updatedURL);
-	};
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -85,15 +69,8 @@ export const App: React.FC = () => {
 	return (
 		<div className='app'>
 			<Routes>
-				<Route
-					path='/'
-					element={<Layout onSearch={handleSearch} onPageChange={handlePageChange} />}
-				>
-					<Route
-						index
-						path=':characters'
-						element={<CharacterPage onItemSelected={onPersonSelected} />}
-					/>
+				<Route path='/' element={<Layout onSearch={handleSearch} />}>
+					<Route index path=':characters' element={<CharacterPage />} />
 				</Route>
 				<Route path='*' element={<NotFoundPage />} />
 			</Routes>

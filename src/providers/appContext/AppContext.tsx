@@ -23,6 +23,8 @@ interface AppContextProps {
 	setPage: Dispatch<SetStateAction<number>>;
 	totalPages: number;
 	setTotalPages: Dispatch<SetStateAction<number>>;
+	URL: string;
+	setURL: Dispatch<SetStateAction<string>>;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -39,6 +41,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 	const [isRightSectionOpen, setIsRightSectionOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(1);
 	const [totalPages, setTotalPages] = useState<number>(1);
+	const [URL, setURL] = useState<string>(`/character/?page=${page}`);
 
 	const contextValue: AppContextProps = {
 		searchTerm,
@@ -55,6 +58,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 		setPage,
 		totalPages,
 		setTotalPages,
+		URL,
+		setURL,
 	};
 
 	return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
