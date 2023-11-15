@@ -27,7 +27,7 @@ export default class Services {
 
 	searchPeople = async (searchTerm: string) => {
 		const res = await this.getResource(`/people/?search=${searchTerm}`);
-		return res;
+		return { results: res.results.map(this.transformPerson), pageNumber: res.count };
 	};
 
 	getId = (item: ICharacter) => {

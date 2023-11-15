@@ -4,15 +4,11 @@ import SearchInput from '../components/UI/serchInput/SearchInput';
 import { Outlet } from 'react-router-dom';
 import Pagination from '../components/UI/pagination/Pagination';
 
-interface ILayoutProps {
-	onSearch: (searchTerm: string) => void;
-}
-
-const Layout: React.FC<ILayoutProps> = ({ onSearch }) => {
+const Layout: React.FC = () => {
 	return (
 		<>
 			<Header />
-			<SearchInput onSearch={onSearch} />
+			<SearchInput />
 			<div className='app__content'>
 				<Outlet />
 			</div>

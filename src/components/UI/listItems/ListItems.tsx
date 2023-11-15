@@ -3,9 +3,13 @@ import { ItemList } from '../itemList/ItemList';
 import { useAppContext } from '../../../providers/appContext/AppContext';
 
 import './ListItems.css';
+import { useEffect } from 'react';
 
 export const ListItems = () => {
 	const { searchResults, isLoading } = useAppContext();
+	useEffect(() => {
+		console.log(searchResults);
+	}, [searchResults]);
 
 	if (isLoading) {
 		return (
