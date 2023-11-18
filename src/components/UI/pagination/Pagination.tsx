@@ -1,16 +1,19 @@
 import React from 'react';
-import './Pagination.css';
-import { useAppContext } from '../../../providers/appContext/AppContext';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCharacters, setPage, setURL } from '../../../store/StarWarsSlice';
+
+import './Pagination.css';
 
 const Pagination: React.FC = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { page, setPage, totalPages, setURL } = useAppContext();
+	const { page, totalPages } = useSelector(selectCharacters);
 
 	const handlePageChange = (newPage: number) => {
-		setPage(newPage);
+		dispatch(setPage(newPage));
 		const updatedURL = `/character/?page=${newPage}`;
-		setURL(updatedURL);
+		dispatch(setURL(updatedURL));
 		navigate(updatedURL);
 	};
 

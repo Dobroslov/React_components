@@ -1,23 +1,23 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import './SearchInput.css';
 import ErrorButton from '../../errorButton/ErrorButton';
 import Services from '../../../API/Services';
-import { useAppContext } from '../../../providers/appContext/AppContext';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	setSearchTerm,
+	setIsLoading,
+	setTotalPages,
+	setSearchResults,
+	selectCharacters,
+} from '../../../store/StarWarsSlice';
 
-const SearchInput: FC = () => {
-	const {
-		searchTerm,
-		setSearchTerm,
-		setSearchResults,
-		setIsLoading,
-		page,
-		setTotalPages,
-		searchResults,
-	} = useAppContext();
+const SearchInput: React.FC = () => {
+	const dispatch = useDispatch();
+	const { searchTerm, page } = useSelector(selectCharacters);
 	const itemsPerPage = 10;
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(e.target.value);
+		dispatch(setSearchTerm(e.target.value));
 	};
 
 	const handleSearchClick = () => {
@@ -31,52 +31,48 @@ const SearchInput: FC = () => {
 	const handleSearch = useCallback(
 		async (term: string) => {
 			const swapi = new Services();
-			setIsLoading(true);
+			dispatch(setIsLoading(true));
 
 			swapi.searchPeople(term.trim().toLowerCase()).then((body) => {
-				setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
-				setSearchResults(body.results);
-				setIsLoading(false);
+				dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
+				dispatch(setSearchResults(body.results));
+				dispatch(setIsLoading(false));
 			});
 
 			localStorage.setItem('searchTerm', term);
 		},
-		[setSearchResults, setIsLoading, setTotalPages]
+		[dispatch]
 	);
 
 	const handleEmptySearch = useCallback(() => {
 		const swapi = new Services();
-		setIsLoading(true);
+		dispatch(setIsLoading(true));
 
 		swapi.getAllPeople(page).then((body) => {
-			setSearchResults(body.arrItems);
-			setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
-			setIsLoading(false);
+			dispatch(setSearchResults(body.arrItems));
+			dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
+			dispatch(setIsLoading(false));
 		});
 
 		localStorage.removeItem('searchTerm');
-	}, [setSearchResults, setIsLoading, setTotalPages, page]);
+	}, [dispatch, page]);
 
 	useEffect(() => {
-		setIsLoading(true);
+		dispatch(setIsLoading(true));
 		const savedSearchTerm = localStorage.getItem('searchTerm');
 		if (savedSearchTerm) {
-			setSearchTerm(savedSearchTerm);
-			setIsLoading(false);
+			dispatch(setSearchTerm(savedSearchTerm));
+			dispatch(setIsLoading(false));
 		} else {
 			const swapi = new Services();
 			swapi.getAllPeople(page).then((body) => {
 				const arrPeople = body.arrItems;
-				setSearchResults(arrPeople);
-				setTotalPages(Math.ceil(body.pageNumber / itemsPerPage));
-				setIsLoading(false);
+				dispatch(setSearchResults(arrPeople));
+				dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
+				dispatch(setIsLoading(false));
 			});
 		}
-	}, [setSearchTerm, setSearchResults, setIsLoading, setTotalPages, page]);
-
-	useEffect(() => {
-		console.log(searchResults);
-	}, [searchResults]);
+	}, [dispatch, page]);
 
 	return (
 		<div className='input__field'>

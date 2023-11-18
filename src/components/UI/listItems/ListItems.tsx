@@ -1,15 +1,12 @@
 import { ClipLoader } from 'react-spinners';
 import { ItemList } from '../itemList/ItemList';
-import { useAppContext } from '../../../providers/appContext/AppContext';
+import { useSelector } from 'react-redux';
+import { selectCharacters } from '../../../store/StarWarsSlice';
 
 import './ListItems.css';
-import { useEffect } from 'react';
 
 export const ListItems = () => {
-	const { searchResults, isLoading } = useAppContext();
-	useEffect(() => {
-		console.log(searchResults);
-	}, [searchResults]);
+	const { searchResults, isLoading } = useSelector(selectCharacters);
 
 	if (isLoading) {
 		return (

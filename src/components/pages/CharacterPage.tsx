@@ -1,9 +1,10 @@
 import PersonDetails from '../UI/personDetails/PersonDetails';
 import { ListItems } from '../UI/listItems/ListItems';
-import { useAppContext } from '../../providers/appContext/AppContext';
+import { useSelector } from 'react-redux';
+import { selectCharacters } from '../../store/StarWarsSlice';
 
 export const CharacterPage: React.FC = () => {
-	const { isRightSectionOpen, selectedPerson } = useAppContext();
+	const { isRightSectionOpen, selectedPerson } = useSelector(selectCharacters);
 
 	return (
 		<div className='app__content'>

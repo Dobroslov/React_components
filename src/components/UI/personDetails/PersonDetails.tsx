@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Services from '../../../API/Services';
 import { IPerson } from '../../../types/types';
 import { ClipLoader } from 'react-spinners';
-import { useAppContext } from '../../../providers/appContext/AppContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsRightSectionOpen, setURL, selectCharacters } from '../../../store/StarWarsSlice';
 import { getNewURL } from '../../../helpers/helpers';
 
 import './PersonDetails.css';
 
 const PersonDetails: React.FC = () => {
-	const { selectedPerson, setIsRightSectionOpen, setURL } = useAppContext();
+	const dispatch = useDispatch();
+	const { selectedPerson } = useSelector(selectCharacters);
 	const [person, setPerson] = useState<IPerson | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleCloseItemDetails = () => {
-		setIsRightSectionOpen(false);
+		dispatch(setIsRightSectionOpen(false));
 		getNewURL();
 	};
 
@@ -31,9 +33,9 @@ const PersonDetails: React.FC = () => {
 	useEffect(() => {
 		if (selectedPerson !== null) {
 			const updatedURL = `/character/?details=${selectedPerson}`;
-			setURL(updatedURL);
+			dispatch(setURL(updatedURL));
 		}
-	}, [selectedPerson, setURL]);
+	}, [selectedPerson, dispatch]);
 
 	const { name, gender, birth_year, eyeColor, id } = person || {};
 
@@ -48,6 +50,7 @@ const PersonDetails: React.FC = () => {
 					<img
 						className='person-image'
 						src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`}
+						alt={name}
 					/>
 
 					<div className='card-body'>

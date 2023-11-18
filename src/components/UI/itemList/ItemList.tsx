@@ -1,10 +1,16 @@
 import React from 'react';
 import { ICharacter } from '../../../types/types';
 import { useNavigate } from 'react-router-dom';
+import { getNewURL } from '../../../helpers/helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	selectCharacters,
+	setIsRightSectionOpen,
+	setSelectedPerson,
+	setURL,
+} from '../../../store/StarWarsSlice';
 
 import './ItemList.css';
-import { useAppContext } from '../../../providers/appContext/AppContext';
-import { getNewURL } from '../../../helpers/helpers';
 
 interface ItemListProps {
 	item: ICharacter;
@@ -12,26 +18,21 @@ interface ItemListProps {
 
 export const ItemList: React.FC<ItemListProps> = ({ item }) => {
 	const navigate = useNavigate();
-	const {
-		setSelectedPerson,
-		selectedPerson,
-		setIsRightSectionOpen,
-		page,
-		isRightSectionOpen,
-		setURL,
-	} = useAppContext();
+
+	const dispatch = useDispatch();
+	const { selectedPerson, isRightSectionOpen, page } = useSelector(selectCharacters);
 
 	const onItemSelected = (id: string) => {
 		const updatedURL = `/character/?page=${page}&details=${id}`;
-		setIsRightSectionOpen(true);
-		setURL(updatedURL);
+		dispatch(setIsRightSectionOpen(true));
+		dispatch(setURL(updatedURL));
 		navigate(updatedURL);
 	};
 
 	const closeItemDetails = () => {
-		setIsRightSectionOpen(!isRightSectionOpen);
+		dispatch(setIsRightSectionOpen(!isRightSectionOpen));
 		getNewURL();
-		setURL(`/character/?page=${page}`);
+		dispatch(setURL(`/character/?page=${page}`));
 	};
 
 	const handleItemSelection = (id: string) => {
@@ -40,7 +41,7 @@ export const ItemList: React.FC<ItemListProps> = ({ item }) => {
 		}
 
 		if (id !== selectedPerson) {
-			setSelectedPerson(id);
+			dispatch(setSelectedPerson(id));
 			onItemSelected(id);
 		}
 	};
