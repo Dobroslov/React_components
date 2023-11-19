@@ -32,7 +32,6 @@ const SearchInput: React.FC = () => {
 		async (term: string) => {
 			const swapi = new Services();
 			dispatch(setIsLoading(true));
-
 			swapi.searchPeople(term.trim().toLowerCase()).then((body) => {
 				dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
 				dispatch(setSearchResults(body.results));

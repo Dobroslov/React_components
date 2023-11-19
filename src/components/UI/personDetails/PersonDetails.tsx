@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import Services from '../../../API/Services';
-import { IPerson } from '../../../types/types';
+import React, { useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsRightSectionOpen, setURL, selectCharacters } from '../../../store/StarWarsSlice';
 import { getNewURL } from '../../../helpers/helpers';
-
+import { useGetPersonQuery } from '../../../store/starWarsApi';
 import './PersonDetails.css';
 
 const PersonDetails: React.FC = () => {
 	const dispatch = useDispatch();
 	const { selectedPerson } = useSelector(selectCharacters);
-	const [person, setPerson] = useState<IPerson | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
+	const { data, isLoading } = useGetPersonQuery(selectedPerson);
 
 	const handleCloseItemDetails = () => {
 		dispatch(setIsRightSectionOpen(false));
@@ -21,23 +18,12 @@ const PersonDetails: React.FC = () => {
 
 	useEffect(() => {
 		if (selectedPerson !== null) {
-			setIsLoading(true);
-			const swapi = new Services();
-			swapi.getPerson(selectedPerson).then((body) => {
-				setPerson(body as IPerson);
-				setIsLoading(false);
-			});
-		}
-	}, [selectedPerson]);
-
-	useEffect(() => {
-		if (selectedPerson !== null) {
 			const updatedURL = `/character/?details=${selectedPerson}`;
 			dispatch(setURL(updatedURL));
 		}
 	}, [selectedPerson, dispatch]);
 
-	const { name, gender, birth_year, eyeColor, id } = person || {};
+	const { name, gender, birth_year, eyeColor } = data || {};
 
 	return (
 		<div className='person-details__container'>
@@ -45,14 +31,8 @@ const PersonDetails: React.FC = () => {
 				<div className='spinner' data-testid='spinner_person'>
 					<ClipLoader color={'#7ce6aa'} loading={isLoading} size={50} />
 				</div>
-			) : person ? (
+			) : data ? (
 				<div className='person-details card rounded'>
-					<img
-						className='person-image'
-						src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`}
-						alt={name}
-					/>
-
 					<div className='card-body'>
 						<h4>{name}</h4>
 						<ul className='list-group list-group-flush'>

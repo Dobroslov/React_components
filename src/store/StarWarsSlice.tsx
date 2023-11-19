@@ -7,7 +7,7 @@ interface starWarsState {
 	searchTerm: string;
 	searchResults: ICharacter[] | [];
 	isLoading: boolean;
-	selectedPerson: string | null;
+	selectedPerson: string;
 	isRightSectionOpen: boolean;
 	page: number;
 	totalPages: number;
@@ -31,7 +31,7 @@ const StarWarsSlice = createSlice({
 		isLoading: false,
 		page: 1,
 		totalPages: 1,
-		selectedPerson: null,
+		selectedPerson: '',
 		isRightSectionOpen: false,
 		URL: '/character/?page=1',
 	} as starWarsState,
