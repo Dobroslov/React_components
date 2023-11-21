@@ -1,6 +1,7 @@
 .items-list {
 	text-align: left;
 	width: 50%;
+	min-width: 50%;
 	/* flex: 0 0 50%; */
 	list-style: none;
 }

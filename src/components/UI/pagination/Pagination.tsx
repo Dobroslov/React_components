@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCharacters, setPage, setURL } from '../../../store/StarWarsSlice';
+import { selectCharacters, setPage } from '../../../store/StarWarsSlice';
 
 import './Pagination.css';
 
@@ -13,7 +13,6 @@ const Pagination: React.FC = () => {
 	const handlePageChange = (newPage: number) => {
 		dispatch(setPage(newPage));
 		const updatedURL = `/character/?page=${newPage}`;
-		dispatch(setURL(updatedURL));
 		navigate(updatedURL);
 	};
 
