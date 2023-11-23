@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ICharacter, IPerson } from '../types/types';
+import { IPeopleResponse, IPerson } from '../types/types';
 
 export const starWarsApi = createApi({
 	reducerPath: 'starWarsApi',
 	baseQuery: fetchBaseQuery({ baseUrl: 'https://swapi.dev/api' }),
 	endpoints: (builder) => ({
-		getAllPeople: builder.query<{ arrItems: ICharacter[]; pageNumber: number }, number>({
-			query: (pageNumber) => `people/?page=${pageNumber}`,
+		getAllPeople: builder.query<IPeopleResponse, number>({
+			query: (pageNumber = 1) => `people/?page=${pageNumber}`,
 		}),
 		getPerson: builder.query<IPerson, string>({
 			query: (id) => `people/${id}`,
 		}),
-		searchPeople: builder.query<{ results: ICharacter[]; pageNumber: number }, string>({
-			query: (searchTerm) => `people/?search=${searchTerm}`,
+		searchPeople: builder.query<IPeopleResponse, string>({
+			query: (searchTerm = '') => `people/?search=${searchTerm}`,
 		}),
 	}),
 });

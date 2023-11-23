@@ -7,6 +7,7 @@ import './ListItems.css';
 
 export const ListItems = () => {
 	const { searchResults, isLoading } = useSelector(selectCharacters);
+	console.log('file: ListItems.tsx:10 ~ ListItems ~ isLoading:', isLoading);
 
 	if (isLoading) {
 		return (

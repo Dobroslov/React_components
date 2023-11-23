@@ -10,6 +10,11 @@ export interface IPerson extends ICharacter {
 	birth_year: string;
 }
 
+export interface IPeopleResponse {
+	count: number;
+	results: IPerson[];
+}
+
 export interface SearchResultsProps {
 	items: ICharacter[];
 	isLoading: boolean;

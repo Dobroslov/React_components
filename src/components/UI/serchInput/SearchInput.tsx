@@ -1,20 +1,33 @@
-import React, { useCallback, useEffect } from 'react';
-import './SearchInput.css';
-import ErrorButton from '../../errorButton/ErrorButton';
-import Services from '../../../API/Services';
+// ... (imports and component definition)
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	setSearchTerm,
-	setIsLoading,
-	setTotalPages,
-	setSearchResults,
 	selectCharacters,
+	setIsLoading,
+	setSearchResults,
+	setSearchTerm,
+	setTotalPages,
 } from '../../../store/StarWarsSlice';
+import { useGetAllPeopleQuery, useSearchPeopleQuery } from '../../../store/starWarsApi';
+
+import './SearchInput.css';
+import { useEffect } from 'react';
 
 const SearchInput: React.FC = () => {
 	const dispatch = useDispatch();
 	const { searchTerm, page } = useSelector(selectCharacters);
 	const itemsPerPage = 10;
+
+	const {
+		data: searchResults,
+		refetch: refetchSearch,
+		isLoading: isSearchFetching,
+	} = useSearchPeopleQuery(searchTerm);
+	const {
+		data: getAllPeopleData,
+		refetch: refetchAllPeople,
+		isFetching: isAllPeopleFetching,
+	} = useGetAllPeopleQuery(page);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		dispatch(setSearchTerm(e.target.value));
@@ -28,50 +41,64 @@ const SearchInput: React.FC = () => {
 		}
 	};
 
-	const handleSearch = useCallback(
-		async (term: string) => {
-			const swapi = new Services();
-			dispatch(setIsLoading(true));
-			swapi.searchPeople(term.trim().toLowerCase()).then((body) => {
-				dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
-				dispatch(setSearchResults(body.results));
-				dispatch(setIsLoading(false));
-			});
+	const handleSearch = async (term: string) => {
+		dispatch(setIsLoading(isSearchFetching));
 
-			localStorage.setItem('searchTerm', term);
-		},
-		[dispatch]
-	);
+		const resultsWithId =
+			searchResults?.results?.map((person) => ({
+				...person,
+				id: person.url.split('/').slice(-2, -1)[0],
+			})) || [];
+		dispatch(setSearchResults(resultsWithId));
+		if (searchResults) {
+			dispatch(setTotalPages(Math.ceil(searchResults.count / itemsPerPage)));
+		}
 
-	const handleEmptySearch = useCallback(() => {
-		const swapi = new Services();
-		dispatch(setIsLoading(true));
+		dispatch(setIsLoading(isSearchFetching));
 
-		swapi.getAllPeople(page).then((body) => {
-			dispatch(setSearchResults(body.arrItems));
-			dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
-			dispatch(setIsLoading(false));
-		});
+		localStorage.setItem('searchTerm', term);
+	};
+
+	const handleEmptySearch = () => {
+		dispatch(setIsLoading(isAllPeopleFetching));
+
+		const allPeopleWithId =
+			getAllPeopleData?.results?.map((person) => ({
+				...person,
+				id: person.url.split('/').slice(-2, -1)[0],
+			})) || [];
+		dispatch(setSearchResults(allPeopleWithId));
+		if (getAllPeopleData) {
+			dispatch(setTotalPages(Math.ceil(getAllPeopleData.count / itemsPerPage)));
+		}
+
+		dispatch(setIsLoading(isAllPeopleFetching));
 
 		localStorage.removeItem('searchTerm');
-	}, [dispatch, page]);
+	};
 
 	useEffect(() => {
 		dispatch(setIsLoading(true));
+		refetchSearch();
+		refetchAllPeople();
+
 		const savedSearchTerm = localStorage.getItem('searchTerm');
 		if (savedSearchTerm) {
 			dispatch(setSearchTerm(savedSearchTerm));
-			dispatch(setIsLoading(false));
 		} else {
-			const swapi = new Services();
-			swapi.getAllPeople(page).then((body) => {
-				const arrPeople = body.arrItems;
-				dispatch(setSearchResults(arrPeople));
-				dispatch(setTotalPages(Math.ceil(body.pageNumber / itemsPerPage)));
-				dispatch(setIsLoading(false));
-			});
+			if (getAllPeopleData) {
+				const allPeopleWithId =
+					getAllPeopleData?.results?.map((person) => ({
+						...person,
+						id: person.url.split('/').slice(-2, -1)[0],
+					})) || [];
+				dispatch(setSearchResults(allPeopleWithId));
+				dispatch(setTotalPages(Math.ceil(getAllPeopleData.count / itemsPerPage)));
+			}
 		}
-	}, [dispatch, page]);
+
+		dispatch(setIsLoading(false));
+	}, [dispatch, getAllPeopleData, refetchSearch, refetchAllPeople]);
 
 	return (
 		<div className='input__field'>
@@ -85,7 +112,6 @@ const SearchInput: React.FC = () => {
 			<button className='btn' type='button' onClick={handleSearchClick}>
 				Поиск
 			</button>
-			<ErrorButton />
 		</div>
 	);
 };
